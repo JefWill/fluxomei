@@ -332,14 +332,25 @@ function saveData() {
 }
 
 function loadData() {
-  const data = localStorage.getItem('fluxomei_data');
-  if(data) {
-    try {
-      state.transactions = JSON.parse(data);
-    } catch(e) {
-      console.error(e);
+  const initialized = localStorage.getItem('fluxomei_initialized');
+  
+  if (!initialized) {
+    saveData();
+    localStorage.setItem('fluxomei_initialized', 'true');
+  } else {
+    const data = localStorage.getItem('fluxomei_data');
+    if(data) {
+      try {
+        state.transactions = JSON.parse(data);
+      } catch(e) {
+        console.error(e);
+        state.transactions = [];
+      }
+    } else {
+      state.transactions = [];
     }
   }
+
   const cats = localStorage.getItem('fluxomei_cats');
   if(cats) {
     try {
@@ -352,6 +363,7 @@ function loadData() {
 
 function clearData() {
   if(confirm("Tem certeza que deseja apagar todos os dados? Isso não pode ser desfeito.")) {
+    localStorage.setItem('fluxomei_initialized', 'true');
     localStorage.removeItem('fluxomei_data');
     localStorage.removeItem('fluxomei_cats');
     state.transactions = [];
