@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>FluxoMEI</title>
+  
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- Icons -->
+  <script src="https://unpkg.com/@phosphor-icons/web"></script>
+  
+  <!-- Styles -->
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- Main App Container -->
+  <main id="app">
+    
+    <!-- VIEW: HOME -->
+    <div id="view-home" class="view active">
+      <!-- Header -->
+      <header class="header">
+        <div class="user-greeting">
+          <div class="avatar">
+            <i class="ph ph-user"></i>
+          </div>
+          <div class="greeting-text">
+            <span>Olá, Empreendedor</span>
+            <h2>FluxoMEI</h2>
+          </div>
+        </div>
+        <button class="icon-btn">
+          <i class="ph ph-bell"></i>
+        </button>
+      </header>
+
+      <!-- Balance Card -->
+      <section class="balance-section">
+        <div class="balance-card">
+          <div class="balance-header">
+            <span>Saldo Operacional</span>
+            <button class="icon-btn ghost" id="toggle-visibility">
+              <i class="ph ph-eye"></i>
+            </button>
+          </div>
+          <h1 class="balance-amount" id="main-balance">R$ 0,00</h1>
+          
+          <div class="balance-footer">
+            <div class="stat">
+              <i class="ph-fill ph-arrow-circle-up text-green"></i>
+              <div>
+                <span class="stat-label">Receitas</span>
+                <span class="stat-val" id="stat-receita">R$ 0,00</span>
+              </div>
+            </div>
+            <div class="stat">
+              <i class="ph-fill ph-arrow-circle-down text-red"></i>
+              <div>
+                <span class="stat-label">Custos</span>
+                <span class="stat-val" id="stat-custo">R$ 0,00</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Quick Actions -->
+      <section class="actions-section">
+        <div class="action-grid">
+          <button class="action-btn" onclick="openTransactionModal('venda')">
+            <div class="action-icon bg-green-light">
+              <i class="ph ph-money text-green"></i>
+            </div>
+            <span>Vender</span>
+          </button>
+          <button class="action-btn" onclick="openTransactionModal('despesa')">
+            <div class="action-icon bg-red-light">
+              <i class="ph ph-receipt text-red"></i>
+            </div>
+            <span>Gasto</span>
+          </button>
+          <button class="action-btn" onclick="switchView('view-reports')">
+            <div class="action-icon bg-gray-light">
+              <i class="ph ph-chart-pie-slice text-gray"></i>
+            </div>
+            <span>Análise</span>
+          </button>
+          <button class="action-btn" onclick="switchView('view-settings')">
+            <div class="action-icon bg-gray-light">
+              <i class="ph ph-gear text-gray"></i>
+            </div>
+            <span>Ajustes</span>
+          </button>
+        </div>
+      </section>
+
+      <!-- Recent Transactions -->
+      <section class="history-section">
+        <div class="section-header">
+          <h3>Histórico Recente</h3>
+          <button class="text-btn" onclick="switchView('view-wallet')">Ver tudo <i class="ph ph-caret-right"></i></button>
+        </div>
+        <div class="history-list" id="history-list">
+          <!-- Injected via JS -->
+        </div>
+      </section>
+    </div>
+
+    <!-- VIEW: REPORTS -->
+    <div id="view-reports" class="view">
+      <header class="header">
+        <h2>Relatório DRE</h2>
+      </header>
+      <div class="content-padded">
+        <div class="report-card">
+          <h3 class="mb-2">Demonstração de Resultado</h3>
+          <div class="dre-row">
+            <span>(+) Faturamento Bruto</span>
+            <span id="dre-fat" class="text-green font-bold">R$ 0,00</span>
+          </div>
+          <hr class="divider">
+          <div class="dre-row text-sm">
+            <span>(-) Custos Variáveis</span>
+            <span id="dre-vari" class="text-red">- R$ 0,00</span>
+          </div>
+          <div class="dre-row text-sm">
+            <span>(-) ICMS (12%)</span>
+            <span id="dre-icms" class="text-red">- R$ 0,00</span>
+          </div>
+          <div class="dre-row font-semibold mt-2">
+            <span>(=) Margem de Contribuição</span>
+            <span id="dre-margem">R$ 0,00</span>
+          </div>
+          <hr class="divider">
+          <div class="dre-row text-sm">
+            <span>(-) Custos Fixos</span>
+            <span id="dre-fixo" class="text-gray">- R$ 0,00</span>
+          </div>
+          <hr class="divider">
+          <div class="dre-row total">
+            <span>(=) Resultado do Período</span>
+            <span id="dre-lucro" class="font-bold">R$ 0,00</span>
+          </div>
+          
+          <div class="progress-bar-wrap mt-4">
+            <div class="progress-labels">
+              <span class="text-sm font-semibold">Ponto de Equilíbrio / Custos Totais</span>
+              <span class="text-sm font-bold" id="dre-pct">0%</span>
+            </div>
+            <div class="progress-track">
+              <div class="progress-fill" id="dre-fill" style="width: 0%"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- VIEW: WALLET -->
+    <div id="view-wallet" class="view">
+      <header class="header">
+        <h2>Caixa / Histórico</h2>
+      </header>
+      <div class="content-padded">
+        <div class="history-list" id="full-history-list">
+          <!-- Injected via JS -->
+        </div>
+      </div>
+    </div>
+
+    <!-- VIEW: SETTINGS -->
+    <div id="view-settings" class="view">
+      <header class="header">
+        <h2>Configurações</h2>
+      </header>
+      <div class="content-padded">
+        <div class="settings-card">
+          <div class="setting-item">
+            <div class="setting-info">
+              <i class="ph ph-user"></i>
+              <span>Perfil do Negócio</span>
+            </div>
+            <i class="ph ph-caret-right text-gray"></i>
+          </div>
+          <div class="setting-item" onclick="switchView('view-categories')">
+            <div class="setting-info">
+              <i class="ph ph-list-dashes"></i>
+              <span>Configurar Contas</span>
+            </div>
+            <i class="ph ph-caret-right text-gray"></i>
+          </div>
+          <div class="setting-item" onclick="document.body.classList.toggle('dark-mode')">
+            <div class="setting-info">
+              <i class="ph ph-moon"></i>
+              <span>Alternar Tema</span>
+            </div>
+          </div>
+          <div class="setting-item text-red" onclick="clearData()">
+            <div class="setting-info">
+              <i class="ph ph-trash"></i>
+              <span>Limpar Todos os Dados</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- VIEW: CATEGORIES CONFIG -->
+    <div id="view-categories" class="view">
+      <header class="header">
+        <button class="icon-btn" onclick="switchView('view-settings')">
+          <i class="ph ph-arrow-left"></i>
+        </button>
+        <h2>Configurar Contas</h2>
+        <div style="width: 44px;"></div>
+      </header>
+      <div class="content-padded pb-24">
+        <div class="categories-list" id="categories-config-list">
+          <!-- Injected via JS -->
+        </div>
+      </div>
+    </div>
+
+    <!-- Bottom Navigation -->
+    <nav class="bottom-nav">
+      <button class="nav-item active" id="nav-view-home" onclick="switchView('view-home')">
+        <i class="ph-fill ph-house"></i>
+        <span>Início</span>
+      </button>
+      <button class="nav-item" id="nav-view-reports" onclick="switchView('view-reports')">
+        <i class="ph ph-chart-line-up"></i>
+        <span>Relatórios</span>
+      </button>
+      <div class="nav-fab-wrap">
+        <button class="fab" onclick="openTransactionModal('venda')">
+          <i class="ph ph-plus"></i>
+        </button>
+      </div>
+      <button class="nav-item" id="nav-view-wallet" onclick="switchView('view-wallet')">
+        <i class="ph ph-wallet"></i>
+        <span>Caixa</span>
+      </button>
+      <button class="nav-item" id="nav-view-settings" onclick="switchView('view-settings')">
+        <i class="ph ph-gear"></i>
+        <span>Ajustes</span>
+      </button>
+    </nav>
+  </main>
+
+  <!-- Transaction Modal (Bottom Sheet) -->
+  <div class="modal-overlay" id="transaction-modal">
+    <div class="bottom-sheet">
+      <div class="sheet-handle"></div>
+      <div class="sheet-header">
+        <h3 id="modal-title">Nova Transação</h3>
+      </div>
+      
+      <div class="sheet-content">
+        <!-- Tabs -->
+        <div class="tabs">
+          <button class="tab-btn active" id="tab-receita" onclick="switchModalTab('receita')">Receita</button>
+          <button class="tab-btn" id="tab-fixo" onclick="switchModalTab('fixo')">Fixa</button>
+          <button class="tab-btn" id="tab-variavel" onclick="switchModalTab('variavel')">Variável</button>
+        </div>
+
+        <!-- Value Input with Presets -->
+        <div class="input-section">
+          <div class="native-input-wrap" id="input-wrap">
+            <span class="currency">R$</span>
+            <input type="number" id="native-amount" class="native-amount" inputmode="decimal" placeholder="0,00" oninput="onNativeInput()">
+          </div>
+          
+          <div class="presets-row">
+            <button class="preset-btn" onclick="addPreset(5)">+ R$ 5</button>
+            <button class="preset-btn" onclick="addPreset(10)">+ R$ 10</button>
+            <button class="preset-btn" onclick="addPreset(50)">+ R$ 50</button>
+            <button class="preset-btn" onclick="addPreset(100)">+ R$ 100</button>
+          </div>
+        </div>
+
+        <!-- Category Grid (Only for Despesa, hidden for Receita by default) -->
+        <div class="category-section" id="category-section" style="display: none;">
+          <h4 class="section-subtitle">Escolha a Categoria</h4>
+          <div class="category-grid" id="category-grid">
+            <!-- Injected via JS -->
+          </div>
+        </div>
+
+        <button class="btn-primary w-full mt-4" id="btn-confirm" onclick="confirmTransaction()">Confirmar R$ 0,00</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js?v=3"></script>
+</body>
+</html>

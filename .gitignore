@@ -1,0 +1,14 @@
+# IDE files
+.vscode/
+.idea/
+
+# Local data & temp files
+.DS_Store
+*.png
+*.jpg
+*.jpeg
+*.gif
+
+# Book transcript / study materials (optional but good to ignore to keep repo clean)
+# "transcrição do livro.md"
+# "contexto.md"
