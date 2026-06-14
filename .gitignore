@@ -4,11 +4,16 @@
 
 # Local data & temp files
 .DS_Store
+
+# Images
 *.png
 *.jpg
 *.jpeg
 *.gif
 
-# Book transcript / study materials (optional but good to ignore to keep repo clean)
-# "transcrição do livro.md"
-# "contexto.md"
+# Extra files to ignore
+fluxomei.html
+contexto.md
+"transcrição do livro.md"
+"Captura de tela 2026-06-14 153207.png"
+c8dfadf2-07a7-4b7e-a26a-5b21f1290ec5.jpg
