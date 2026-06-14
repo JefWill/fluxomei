@@ -352,9 +352,9 @@ function loadData() {
 
 function clearData() {
   if(confirm("Tem certeza que deseja apagar todos os dados? Isso não pode ser desfeito.")) {
+    localStorage.removeItem('fluxomei_data');
+    localStorage.removeItem('fluxomei_cats');
     state.transactions = [];
-    localStorage.removeItem('fluxomei_cats'); // Reset categories as well
-    loadData(); // Re-init defaults
-    location.reload(); // Refresh to ensure defaults apply completely
+    location.reload();
   }
 }
