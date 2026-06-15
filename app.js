@@ -93,7 +93,7 @@ function renderAll() {
 
 function calculateTotals() {
   let receita = 0;
-  let despesaFixa = 0;
+  let despesaFixaOutros = 0;
   let despesaVariavel = 0;
   
   state.transactions.forEach(t => {
@@ -103,22 +103,23 @@ function calculateTotals() {
       const catInfo = state.categories.find(c => c.id === t.cat);
       if (catInfo) {
         if (catInfo.type === 'fixo') {
-          despesaFixa += t.value;
+          despesaFixaOutros += t.value;
         } else {
           despesaVariavel += t.value;
         }
       } else {
-        despesaFixa += t.value;
+        despesaFixaOutros += t.value;
       }
     }
   });
 
-  const icms = receita * 0.12; // ICMS is 12% of Sales
-  const despesa = despesaFixa + despesaVariavel + icms;
-  const margem = receita - despesaVariavel - icms;
+  const das = 76.60; // Guia DAS MEI fixa (INSS R$ 70,60 + ICMS R$ 5,00 + ISS R$ 1,00)
+  const despesaFixa = despesaFixaOutros + das;
+  const despesa = despesaFixa + despesaVariavel;
+  const margem = receita - despesaVariavel;
   const saldo = margem - despesaFixa;
 
-  return { receita, despesaFixa, despesaVariavel, icms, despesa, margem, saldo };
+  return { receita, despesaFixaOutros, despesaFixa, despesaVariavel, das, despesa, margem, saldo };
 }
 
 function renderDashboard() {
@@ -136,25 +137,26 @@ function renderDashboard() {
 }
 
 function renderReports() {
-  const { receita, despesaFixa, despesaVariavel, icms, despesa, margem, saldo } = calculateTotals();
+  const { receita, despesaFixaOutros, despesaFixa, despesaVariavel, das, despesa, margem, saldo } = calculateTotals();
   
   document.getElementById('dre-fat').innerText = BRL(receita);
   document.getElementById('dre-vari').innerText = "- " + BRL(despesaVariavel);
-  document.getElementById('dre-icms').innerText = "- " + BRL(icms);
+  document.getElementById('dre-das').innerText = "- " + BRL(das);
   document.getElementById('dre-margem').innerText = BRL(margem);
-  document.getElementById('dre-fixo').innerText = "- " + BRL(despesaFixa);
+  document.getElementById('dre-fixo').innerText = "- " + BRL(despesaFixaOutros);
   document.getElementById('dre-lucro').innerText = BRL(saldo);
   
   let pct = 0;
-  if(receita > 0) {
-    pct = Math.min(100, Math.round((despesa / receita) * 100));
-  } else if (despesa > 0) {
-    pct = 100;
+  if(despesaFixa > 0) {
+    pct = Math.min(100, Math.round((margem / despesaFixa) * 100));
+    if(pct < 0) pct = 0;
+  } else {
+    pct = margem >= 0 ? 100 : 0;
   }
   
   document.getElementById('dre-pct').innerText = pct + '%';
   document.getElementById('dre-fill').style.width = pct + '%';
-  document.getElementById('dre-fill').style.backgroundColor = pct > 80 ? 'var(--red)' : 'var(--primary)';
+  document.getElementById('dre-fill').style.backgroundColor = pct >= 100 ? 'var(--green)' : 'var(--primary)';
 }
 
 function renderWallet() {
